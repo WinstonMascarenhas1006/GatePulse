@@ -21,7 +21,7 @@ def score_quality(quality_issues: pd.DataFrame, milestones: pd.DataFrame) -> dic
     if len(quality_issues):
         for issue_type, w in RULE_WEIGHTS.items():
             penalty += int((quality_issues["issue_type"] == issue_type).sum()) * w
-    overall = max(0, 100 - int(penalty / n * 100))
+    overall = max(0, 100 - int(penalty / n * 10))
 
     per_launch = []
     if len(quality_issues):
