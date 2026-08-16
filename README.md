@@ -1,53 +1,108 @@
-# FIELD MANUAL GP–01  
-### Recovered from Helion Industrial · Launch Office · Drawer C
+<p align="center">
+  <img src="docs/assets/gatepulse-banner.png" alt="GatePulse — launch readiness control surface" width="100%" />
+</p>
+
+<p align="center">
+  <strong>GATEPULSE</strong><br/>
+  <em>See the launch. Trust the pipeline.</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/stack-Python%20·%20FastAPI%20·%20sklearn-E8452D?style=flat-square&labelColor=101820" alt="stack" />
+  <img src="https://img.shields.io/badge/data-100%25%20synthetic-101820?style=flat-square&labelColor=E8452D" alt="synthetic" />
+  <img src="https://img.shields.io/badge/UI-Deck%20%2B%20Engine%20under%20glass-101820?style=flat-square" alt="ui" />
+  <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="license" />
+</p>
 
 ---
 
-Someone left this binder open on the Monterrey shift desk.
+## The map
 
-Inside: how a fictional factory network stops guessing whether a new product will actually hit **Start of Production** — and how you can boot the same machine on your laptop.
+Four plants. One pulse.
 
-You are holding **GatePulse**.
+<p align="center">
+  <img src="docs/assets/gatepulse-plants.png" alt="Helion plant network: Leipzig, Brno, Monterrey, Penang" width="920" />
+</p>
 
----
+| Code | Plant | Role in the demo |
+|:----:|:------|:-----------------|
+| **LEJ** | Leipzig | EU launch office gravity |
+| **BRQ** | Brno | Supplier / pilot pressure |
+| **MTY** | Monterrey | Americas cutover heat |
+| **PEN** | Penang | APAC logistics & MES |
 
-## Before the software, a scene
-
-Tuesday. Gate 4 (“Pilot build complete”) is green in one spreadsheet and amber in another.  
-Training slides say “done.” The trainer is on leave. MES cutover is “90%.” Nobody agrees what 90% means.
-
-The steering call starts in nine minutes.
-
-GatePulse exists for that exact nine minutes: one pulse for **progress**, **blockers**, **data lies**, and **slip risk** — across Leipzig, Brno, Monterrey, and Penang.
-
-All programs are invented. All rows are synthetic. The panic is realistic.
+Everything on this map is fictional. The coordination problem is not.
 
 ---
 
-## What you are actually installing
+## The nerve
 
-Not a slide deck.  
-Not a notebook graveyard.
-
-A small industrial nervous system:
-
-1. Invent a plant’s worth of launch chaos  
-2. Wash it until the dates stop being nonsense  
-3. Score how dirty the checklist still is  
-4. Ask a quiet RandomForest which launches will slip  
-5. Serve everything through a custom glass UI that can **re-run the backend live**
-
-The face of the product is a browser.  
-The heart is Python.  
-They are not strangers — open **Engine** and you’ll see the heart beat.
-
----
-
-## Boot sequence (do this in order)
+<p align="center">
+  <img src="docs/assets/gatepulse-pipeline.png" alt="GatePulse pipeline: RAW → WASH → STORE → SCORE → RISK → DECK" width="920" />
+</p>
 
 ```text
-clone  →  venv  →  pip  →  pipeline  →  uvicorn  →  browser
+ RAW checklists ──► ETL wash ──► SQLite
+                         │
+                         ▼
+                   launch facts ──► quality score
+                         │               │
+                         └────► slip-risk model ──► Deck / labs / Excel
 ```
+
+| Stage | You feel it as… |
+|:-----:|:----------------|
+| **RAW** | Messy milestone CSVs (bad dates, missing %, typo statuses) |
+| **WASH** | Cleaner that repairs + logs every fix |
+| **STORE** | SQLite you can browse in **Data** |
+| **SCORE** | Portfolio quality index |
+| **RISK** | Offline RandomForest SOP-slip score |
+| **DECK** | Browser glass — charts, insights, exports |
+
+---
+
+## The glass (UI rooms)
+
+```text
+┌────────┬──────────────────────────────────────────────┐
+│  GP    │  Deck   Engine   Data   Model   Launches …   │
+│  rail  ├──────────────────────────────────────────────┤
+│        │                                              │
+│        │   ┌──────────────┐  ┌─────────────────────┐  │
+│        │   │  headline    │  │  dark KPI pulse     │  │
+│        │   └──────────────┘  └─────────────────────┘  │
+│        │   ┌────────────────┐ ┌──────────────────┐    │
+│        │   │ plant health   │ │ AI read-out      │    │
+│        │   └────────────────┘ └──────────────────┘    │
+│        │                                              │
+└────────┴──────────────────────────────────────────────┘
+         ▲                              ▲
+    brand spine                   command canvas
+```
+
+| Open this | Look for this |
+|:----------|:--------------|
+| **Deck** | KPIs · plant bars · AI tips · scatter risk map |
+| **Engine** | Stage buttons · live terminal · artifact list |
+| **Data** | RAW ‖ CLEAN split · SQLite · quality pie |
+| **Model** | Holdout metrics · feature bars · what-if levers |
+| **Launches** | One program → gate bars → tasks |
+| **Exports** | Excel + Markdown steering pack |
+
+> First visit gets a **spotlight tour**.  
+> Missed it? Top-right → **Take tour**. Esc closes.
+
+---
+
+## Ignition
+
+<p align="center">
+
+| ① | ② | ③ | ④ | ⑤ |
+|:-:|:-:|:-:|:-:|:-:|
+| clone | venv | pip | pipeline | open glass |
+
+</p>
 
 ```powershell
 git clone https://github.com/WinstonMascarenhas1006/GatePulse.git
@@ -59,88 +114,93 @@ python scripts\run_pipeline.py
 uvicorn app.api:app --reload --port 8080
 ```
 
-Then walk into the room:
+<p align="center"><strong>→ http://localhost:8080</strong></p>
 
-**http://localhost:8080**
-
-A guided spotlight will try to introduce itself once.  
-If you wave it away, the button **Take tour** brings it back. Escape always works.
-
----
-
-## Rooms in the building
-
-Walk the corridor like a new hire on day one.
-
-| Door | What happens when you open it |
-|------|-------------------------------|
-| **Deck** | The quiet boardroom view — KPIs, plant posture, AI mutterings |
-| **Engine** | The basement. Buttons that call real pipeline stages. A black terminal that does not flatter you |
-| **Data** | Evidence locker. RAW on the left, CLEANED on the right. SQLite if you are nosy |
-| **Model** | The oracle’s desk. Feature importance. Sliders. “What if we block two more gates?” |
-| **Launches** | One program at a time — gates as a bar horizon, tasks underneath |
-| **Exports** | Paper for humans who still live in Excel |
-
-`BE` on a door means: this room shows the backend on purpose.
-
----
-
-## How the machine thinks (no mythology)
+Demo choreography (90 seconds):
 
 ```text
-RAW CSVs
-   │
-   ▼
- ETL wash  ──►  SQLite shelf
-   │
-   ▼
- launch facts  ──►  quality score
-   │                    │
-   └──────────►  slip-risk model
-                        │
-                        ▼
-              Deck · labs · Excel brief
-```
-
-Training happens on your machine. No cloud key. No rented genius.  
-If the holdout score looks awkward, that is the dataset being small — the product does not cosplay as omniscient.
-
----
-
-## Folder as floor plan
-
-```text
-app/web/          glass & switches
-app/api.py        the hallway that connects glass to brain
-src/gatepulse/    invent · wash · judge · predict · print
-scripts/          the ignition key (run_pipeline.py)
-docs/             why this exists, and every decision we refused to forget
-tests/            the cheap smoke alarms
+Engine  →  Run full pipeline  →  watch terminal
+   ↓
+Deck    →  KPIs refresh
+   ↓
+Data    →  RAW vs CLEAN
+   ↓
+Model   →  move a slider → Score
 ```
 
 ---
 
-## Why Helion, not “a famous car brand’s homework”
+## System sketch
 
-This project practices planning analytics, checklist quality, automation, dashboards, and AI prioritization.
+```mermaid
+flowchart TB
+  subgraph FACE["FACE · app/web"]
+    D[Deck]
+    E[Engine]
+    L[Data / Model / Launches]
+  end
 
-It refuses to cosplay as a photocopy of any one employer’s certification desk.  
-If an interviewer asks “why launch readiness?” — answer with transfer, not theatre.  
-See `docs/SKILL_TRANSFER.md` when you need the careful version.
+  subgraph NERVE["NERVE · app/api.py"]
+    API[FastAPI]
+  end
 
-The long memory of the build lives in `docs/DECISION_LOG.md`.
+  subgraph BRAIN["BRAIN · src/gatepulse"]
+    G[generate]
+    T[etl]
+    Q[quality]
+    A[ai_risk]
+    R[report]
+  end
+
+  D --> API
+  E --> API
+  L --> API
+  API --> G & T & Q & A & R
+  G --> T --> Q --> A --> R
+```
+
+```text
+app/web/           face
+app/api.py         nerve
+src/gatepulse/     brain
+scripts/           ignition keys
+docs/assets/       pictures for this page
+docs/              decisions · CV · transfer notes
+tests/             smoke alarms
+```
 
 ---
 
-## License plate
+## AI without the fog machine
 
-MIT.  
-Helion Industrial is a ghost company invented for learning.  
-No confidential OEM blood was used in these tables.
+```text
+features ──► RandomForest ──► score 0–100 ──► High / Medium / Low
+                    │
+                    ├── feature importance chart
+                    └── what-if scorer (Model room)
+```
+
+Runs offline. No API key. Small-N metrics stay honest on screen.
 
 ---
 
-*Close the binder.*  
-*Open the Engine.*  
-*Run the pipeline.*  
-*Then look at the Deck like you have nine minutes left.*
+## Why this story exists
+
+Skills practiced: planning data · checklist QA · automation · dashboards · AI prioritization · multi-plant ops.
+
+Story chosen: **NPI / SOP launch readiness** — not a photocopy of any single certification job ad.
+
+Careful interview wording → [`docs/SKILL_TRANSFER.md`](docs/SKILL_TRANSFER.md)  
+Build memory → [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md)  
+CV lines → [`docs/CV_BULLETS.md`](docs/CV_BULLETS.md)
+
+---
+
+<p align="center">
+  <img src="docs/assets/gatepulse-banner.png" alt="" width="60%" />
+</p>
+
+<p align="center">
+  <sub>MIT · Helion Industrial is fictional · synthetic data only</sub><br/>
+  <b>See the launch.</b> <i>Trust the pipeline.</i>
+</p>
