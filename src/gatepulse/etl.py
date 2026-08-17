@@ -35,7 +35,7 @@ def clean_milestones(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
                 "field": "planned_date",
                 "issue_type": "invalid_date",
                 "raw_value": str(clean.at[idx, "planned_date"]),
-                "severity": "Imputed from plant-launch median planned date",
+                "severity": "Imputed from campus-programme median planned date",
             }
         )
     clean.loc[bad_dates, "planned_date"] = pd.NaT
@@ -163,7 +163,7 @@ def build_launch_facts(
 
 def run_etl() -> dict[str, pd.DataFrame]:
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
-    plants = _read_raw("plants")
+    campuses = _read_raw("campuses")
     programs = _read_raw("programs")
     workstreams = _read_raw("workstreams")
     launches = _read_raw("launches")
@@ -177,7 +177,7 @@ def run_etl() -> dict[str, pd.DataFrame]:
     )
 
     outputs = {
-        "plants": plants,
+        "campuses": campuses,
         "programs": programs,
         "workstreams": workstreams,
         "launches": launches,
@@ -190,13 +190,11 @@ def run_etl() -> dict[str, pd.DataFrame]:
     for name, df in outputs.items():
         df.to_csv(DATA_PROCESSED / f"{name}.csv", index=False)
 
-    if DB_PATH.exists():
-        DB_PATH.unlink()
     with sqlite3.connect(DB_PATH) as conn:
         for name, df in outputs.items():
             df.to_sql(name, conn, index=False, if_exists="replace")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_ms_launch ON milestones(launch_id)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_facts_plant ON launch_facts(plant_code)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_facts_campus ON launch_facts(campus_code)")
     return outputs
 
 

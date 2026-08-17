@@ -1,6 +1,6 @@
 # GatePulse — Decision & Change Log
 
-**Product:** GatePulse (NPI / SOP Launch Readiness Intelligence)  
+**Product:** GatePulse (multi-campus school operations intelligence)  
 **Rule:** Log every decision, change, revision, micro-choice, and **idea source**.
 
 ---
@@ -21,6 +21,9 @@
 | S-USER-04 | User: not satisfied with UI; change entire UI alignments | Full layout realignment D-025 |
 | S-USER-03 | User request: make frontend and backend both visible in the frontend | Dual UI: Command deck + Engine Room / Data Lab / Model Lab |
 | S-DESIGN-01 | User frontend rules (avoid purple/cream AI clichés; expressive fonts; atmospheric background) | Streamlit visual direction |
+| S-USER-09 | User: change concept from four industrial plants to school data | D-031 remap to Northbridge Academies |
+| S-USER-10 | User: "Materials ready" and entire project must read as school | D-032 school-only milestone names |
+| S-USER-11 | User: how is plant_code related to schools? | D-033 rename plant_code → campus_code |
 
 ---
 
@@ -197,4 +200,21 @@
 - **Choice:** Add Driver.js walkthrough (CDN) with spotlight, Next/Back/Skip/Finish, progress, Escape, localStorage gatepulse_tour_v1, and Restart tour control.
 - **Why:** Beginners would not know how to navigate Deck/Engine/Data/Model.
 - **Sources:** S-USER-08 (onboarding tour spec)
+
+### D-032 | 2026-08-17 | CHANGE | School-only milestone names
+- **Choice:** Replace remaining generic/factory milestone labels (e.g. "Materials ready", "Scope freeze", "Go-live") with school language: exam/term plan, invigilators, papers & teaching packs, hall rehearsal, SLT check, parents notified, exam day / term start.
+- **Why:** User flagged "Materials ready" as not obviously school; asked entire project to read as school operations.
+- **Sources:** S-USER-10
+
+### D-031 | 2026-08-17 | DECISION | Domain remap to schools
+- **Choice:** Keep GatePulse engine; replace Helion plants with **Northbridge Academies** campuses (Riverside, Hillcrest, Harbour, Oakwood). Programmes = term start, mocks, public exams, inspection, SEND review, parent reporting.
+- **Why:** User asked whether school data would make more sense than four industrial sites. School **operations** (exam/term gates) still needs planning, QA, dashboards, AI — unlike a random grades table.
+- **Trade-off:** Weaker surface fit to automotive certification JD; stronger everyday explainability. Interview story = method transfer, not domain clone.
+- **Schema:** Later renamed `plant_code` → `campus_code` (D-033). `launch_id` kept as programme-run identifier.
+- **Sources:** S-USER-09
+
+### D-033 | 2026-08-17 | CHANGE | Rename plant_code to campus_code
+- **Choice:** Replace leftover factory column `plant_code` (and table `plants`) with `campus_code` / `campuses` across generator, ETL, AI features, API, UI, and reports.
+- **Why:** User asked how plant code relates to schools — it does not. It was a leftover name from the Helion plant concept.
+- **Sources:** S-USER-11
 

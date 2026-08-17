@@ -47,14 +47,14 @@ def export_excel(path: Path | None = None) -> Path:
     wb = Workbook()
     ws0 = wb.active
     ws0.title = "Executive_Summary"
-    ws0["A1"] = "GatePulse - NPI Launch Readiness Steering Summary"
+    ws0["A1"] = "GatePulse - Campus operations steering summary"
     ws0["A1"].font = Font(bold=True, size=14, color="102A43")
     ws0["A2"] = f"Generated: {datetime.now():%Y-%m-%d %H:%M}"
     ws0["A4"] = "KPI"
     ws0["B4"] = "Value"
     _style_header(ws0)
     kpis = [
-        ("Launches", len(facts)),
+        ("Programmes", len(facts)),
         ("Critical health", int((facts["health"] == "Critical").sum())),
         ("High AI slip risk", int((facts["slip_risk_label"] == "High").sum())),
         ("Avg progress %", round(float(facts["avg_progress"].mean()), 1)),
@@ -96,8 +96,8 @@ def export_markdown_brief(path: Path | None = None) -> Path:
     risks = pd.read_csv(DATA_PROCESSED / "launch_risk_scores.csv")
     insights = generate_insights(risks, facts)
     top_risk = risks.sort_values("slip_risk_score", ascending=False).head(5)
-    by_plant = (
-        facts.groupby("plant_code")
+    by_campus = (
+        facts.groupby("campus_code")
         .agg(
             launches=("launch_id", "count"),
             avg_progress=("avg_progress", "mean"),
@@ -108,28 +108,28 @@ def export_markdown_brief(path: Path | None = None) -> Path:
         .reset_index()
     )
     lines = [
-        "# GatePulse Executive Brief - NPI Launch Portfolio",
+        "# GatePulse Executive Brief - Campus operations",
         "",
         f"_Generated {datetime.now():%Y-%m-%d %H:%M}_",
         "",
         "## Purpose",
-        "Decision-ready view of multi-plant launch gates, checklist data quality, and AI-assessed SOP slip risk.",
+        "Decision-ready view of multi-campus exam/term gates, checklist data quality, and AI-assessed deadline slip risk.",
         "",
         "## Portfolio KPIs",
-        f"- Launches in scope: **{len(facts)}**",
+        f"- Programmes in scope: **{len(facts)}**",
         f"- Critical health: **{int((facts['health']=='Critical').sum())}**",
         f"- High slip-risk (AI): **{int((facts['slip_risk_label']=='High').sum())}**",
         f"- Mean progress: **{facts['avg_progress'].mean():.1f}%**",
         "",
-        "## Plant snapshot",
+        "## Campus snapshot",
         "",
-        _df_to_md(by_plant),
+        _df_to_md(by_campus),
         "",
-        "## Top 5 AI slip-risk launches",
+        "## Top 5 AI slip-risk programmes",
         "",
         _df_to_md(
             top_risk[
-                ["launch_name", "plant_code", "slip_risk_score", "slip_risk_label", "priority"]
+                ["launch_name", "campus_code", "slip_risk_score", "slip_risk_label", "priority"]
             ]
         ),
         "",
@@ -141,12 +141,12 @@ def export_markdown_brief(path: Path | None = None) -> Path:
     lines += [
         "",
         "## Recommended next actions",
-        "1. Unblock Critical launches before the next SOP gate review.",
-        "2. Remediate open data-quality issues in checklists.",
-        "3. Re-run GatePulse after the weekly plant sync.",
+        "1. Unblock Critical programmes before the next exam / term gate.",
+        "2. Remediate open data-quality issues in campus checklists.",
+        "3. Re-run GatePulse after the weekly SLT campus sync.",
         "",
         "---",
-        "_Synthetic demonstrator for Helion Industrial (fictional). Portfolio project._",
+        "_Synthetic demonstrator for Northbridge Academies (fictional). Portfolio project._",
     ]
     path.write_text("\n".join(lines), encoding="utf-8")
     return path

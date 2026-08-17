@@ -32,7 +32,7 @@ FEATURE_COLS_NUM = [
     "quality_score",
     "effort_hours",
 ]
-FEATURE_COLS_CAT = ["plant_code", "priority", "power_class", "family"]
+FEATURE_COLS_CAT = ["campus_code", "priority", "power_class", "family"]
 TARGET = "slip_risk"
 
 
@@ -93,7 +93,7 @@ def train_and_score(seed: int = 42) -> dict:
 
     all_proba = pipe.predict_proba(X)[:, 1]
     scored = df[
-        ["launch_id", "launch_name", "plant_code", "program_id", "priority", "health"]
+        ["launch_id", "launch_name", "campus_code", "program_id", "priority", "health"]
     ].copy()
     scored["slip_risk_proba"] = np.round(all_proba, 4)
     scored["slip_risk_score"] = (all_proba * 100).round(1)
@@ -153,27 +153,27 @@ def generate_insights(scored: pd.DataFrame, facts: pd.DataFrame) -> list[str]:
     if len(high):
         top = high.sort_values("slip_risk_score", ascending=False).iloc[0]
         insights.append(
-            f"Highest SOP-slip risk: {top['launch_name']} "
-            f"(score {top['slip_risk_score']:.0f}/100, plant {top['plant_code']})."
+            f"Highest deadline-slip risk: {top['launch_name']} "
+            f"(score {top['slip_risk_score']:.0f}/100, campus {top['campus_code']})."
         )
-    by_plant = scored.groupby("plant_code")["slip_risk_score"].mean().sort_values(ascending=False)
-    if len(by_plant):
+    by_campus = scored.groupby("campus_code")["slip_risk_score"].mean().sort_values(ascending=False)
+    if len(by_campus):
         insights.append(
-            f"Plant with highest average slip risk: {by_plant.index[0]} "
-            f"({by_plant.iloc[0]:.1f}/100). Review launch-office capacity there."
+            f"Campus with highest average slip risk: {by_campus.index[0]} "
+            f"({by_campus.iloc[0]:.1f}/100). Review exams-office capacity there."
         )
     insights.append(
-        f"{int((facts['health'] == 'Critical').sum())} launch(es) marked Critical on operational health."
+        f"{int((facts['health'] == 'Critical').sum())} programme(s) marked Critical on operational health."
     )
     insights.append(
-        f"{int(facts['blocked_milestones'].sum())} blocked gate(s) across the portfolio "
+        f"{int(facts['blocked_milestones'].sum())} blocked gate(s) across campuses "
         "- candidates for process automation."
     )
     if "quality_score" in facts.columns:
         weak = facts[facts["quality_score"] < 80]
         insights.append(
-            f"{len(weak)} launch(es) below data-quality threshold (80). "
-            "Clean checklist data before steering."
+            f"{len(weak)} programme(s) below data-quality threshold (80). "
+            "Clean checklist data before SLT."
         )
     return insights
 

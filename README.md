@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="docs/assets/gatepulse-banner.png" alt="GatePulse — launch readiness control surface" width="100%" />
+  <img src="docs/assets/gatepulse-banner.png" alt="GatePulse" width="100%" />
 </p>
 
 <p align="center">
   <strong>GATEPULSE</strong><br/>
-  <em>See the launch. Trust the pipeline.</em>
+  <em>See the campus. Trust the pipeline.</em>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/stack-Python%20·%20FastAPI%20·%20sklearn-E8452D?style=flat-square&labelColor=101820" alt="stack" />
+  <img src="https://img.shields.io/badge/domain-four%20school%20campuses-E8452D?style=flat-square&labelColor=101820" alt="domain" />
+  <img src="https://img.shields.io/badge/stack-Python%20·%20FastAPI%20·%20sklearn-101820?style=flat-square" alt="stack" />
   <img src="https://img.shields.io/badge/data-100%25%20synthetic-101820?style=flat-square&labelColor=E8452D" alt="synthetic" />
-  <img src="https://img.shields.io/badge/UI-Deck%20%2B%20Engine%20under%20glass-101820?style=flat-square" alt="ui" />
   <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="license" />
 </p>
 
@@ -18,91 +18,68 @@
 
 ## The map
 
-Four plants. One pulse.
+One school group. Four campuses. Same exams calendar. Different chaos.
 
 <p align="center">
-  <img src="docs/assets/gatepulse-plants.png" alt="Helion plant network: Leipzig, Brno, Monterrey, Penang" width="920" />
+  <img src="docs/assets/gatepulse-campuses.png" alt="Northbridge Academies: Riverside, Hillcrest, Harbour, Oakwood" width="920" />
 </p>
 
-| Code | Plant | Role in the demo |
-|:----:|:------|:-----------------|
-| **LEJ** | Leipzig | EU launch office gravity |
-| **BRQ** | Brno | Supplier / pilot pressure |
-| **MTY** | Monterrey | Americas cutover heat |
-| **PEN** | Penang | APAC logistics & MES |
+| `campus_code` | Campus | Character |
+|:-------------:|:-------|:----------|
+| **RIV** | Riverside | City campus — MIS / devices pressure |
+| **HIL** | Hillcrest | Suburban — staffing and rooms |
+| **HAR** | Harbour | Coastal — invigilation and halls |
+| **OAK** | Oakwood | Rural — comms and results processing |
 
-Everything on this map is fictional. The coordination problem is not.
+Fictional group: **Northbridge Academies**.  
+What is real: term start, mock series, public exams, inspection packs, parent reports.
+
+Each programme run is a `launch_id` at one `campus_code`. There is no plant table — that name was a leftover from an earlier factory concept and has been removed.
 
 ---
 
 ## The nerve
 
 <p align="center">
-  <img src="docs/assets/gatepulse-pipeline.png" alt="GatePulse pipeline: RAW → WASH → STORE → SCORE → RISK → DECK" width="920" />
+  <img src="docs/assets/gatepulse-pipeline.png" alt="Pipeline: RAW → WASH → STORE → SCORE → RISK → DECK" width="920" />
 </p>
 
 ```text
- RAW checklists ──► ETL wash ──► SQLite
-                         │
-                         ▼
-                   launch facts ──► quality score
-                         │               │
-                         └────► slip-risk model ──► Deck / labs / Excel
+ messy campus checklists ──► ETL wash ──► SQLite
+                                  │
+                                  ▼
+                            programme facts ──► quality score
+                                  │                  │
+                                  └────► deadline-slip model ──► Deck / labs / Excel
 ```
 
-| Stage | You feel it as… |
-|:-----:|:----------------|
-| **RAW** | Messy milestone CSVs (bad dates, missing %, typo statuses) |
-| **WASH** | Cleaner that repairs + logs every fix |
+| Stage | In school language |
+|:-----:|:-------------------|
+| **RAW** | Bad exam dates, missing progress, typo statuses |
+| **WASH** | Cleaner that repairs and logs every fix |
 | **STORE** | SQLite you can browse in **Data** |
-| **SCORE** | Portfolio quality index |
-| **RISK** | Offline RandomForest SOP-slip score |
-| **DECK** | Browser glass — charts, insights, exports |
+| **SCORE** | How trustworthy is this campus checklist? |
+| **RISK** | Which programmes will miss exam / term day? |
+| **DECK** | SLT glass — charts, insights, exports |
 
 ---
 
-## The glass (UI rooms)
-
-```text
-┌────────┬──────────────────────────────────────────────┐
-│  GP    │  Deck   Engine   Data   Model   Launches …   │
-│  rail  ├──────────────────────────────────────────────┤
-│        │                                              │
-│        │   ┌──────────────┐  ┌─────────────────────┐  │
-│        │   │  headline    │  │  dark KPI pulse     │  │
-│        │   └──────────────┘  └─────────────────────┘  │
-│        │   ┌────────────────┐ ┌──────────────────┐    │
-│        │   │ plant health   │ │ AI read-out      │    │
-│        │   └────────────────┘ └──────────────────┘    │
-│        │                                              │
-└────────┴──────────────────────────────────────────────┘
-         ▲                              ▲
-    brand spine                   command canvas
-```
+## The glass
 
 | Open this | Look for this |
 |:----------|:--------------|
-| **Deck** | KPIs · plant bars · AI tips · scatter risk map |
-| **Engine** | Stage buttons · live terminal · artifact list |
-| **Data** | RAW ‖ CLEAN split · SQLite · quality pie |
-| **Model** | Holdout metrics · feature bars · what-if levers |
-| **Launches** | One program → gate bars → tasks |
-| **Exports** | Excel + Markdown steering pack |
+| **Deck** | KPIs · campus bars · AI tips · risk scatter |
+| **Engine** | Run generate → ETL → quality → AI → export |
+| **Data** | RAW ‖ CLEAN · SQLite · quality mix |
+| **Model** | Feature importance · what-if scorer |
+| **Campuses** | One programme → gate bars → tasks |
+| **Exports** | Excel + Markdown for SLT |
 
-> First visit gets a **spotlight tour**.  
-> Missed it? Top-right → **Take tour**. Esc closes.
+First visit: spotlight tour. Missed it? **Take tour**. Esc closes.
 
 ---
 
 ## Ignition
-
-<p align="center">
-
-| ① | ② | ③ | ④ | ⑤ |
-|:-:|:-:|:-:|:-:|:-:|
-| clone | venv | pip | pipeline | open glass |
-
-</p>
 
 ```powershell
 git clone https://github.com/WinstonMascarenhas1006/GatePulse.git
@@ -116,91 +93,30 @@ uvicorn app.api:app --reload --port 8080
 
 <p align="center"><strong>→ http://localhost:8080</strong></p>
 
-Demo choreography (90 seconds):
-
 ```text
-Engine  →  Run full pipeline  →  watch terminal
-   ↓
-Deck    →  KPIs refresh
-   ↓
+Engine  →  Run full pipeline
+Deck    →  campus KPIs
 Data    →  RAW vs CLEAN
-   ↓
 Model   →  move a slider → Score
 ```
 
 ---
 
-## System sketch
+## Why schools (and what this still proves)
 
-```mermaid
-flowchart TB
-  subgraph FACE["FACE · app/web"]
-    D[Deck]
-    E[Engine]
-    L[Data / Model / Launches]
-  end
+Same engine as before: planning gates, data quality, dashboards, automation, AI prioritization.
 
-  subgraph NERVE["NERVE · app/api.py"]
-    API[FastAPI]
-  end
+New story: **academic operations** across four campuses — not a random grades dump, not a factory clone.
 
-  subgraph BRAIN["BRAIN · src/gatepulse"]
-    G[generate]
-    T[etl]
-    Q[quality]
-    A[ai_risk]
-    R[report]
-  end
+Skills still transfer to any ops desk (including certification planning): deadlines, evidence packs, dirty source data, steering reports.
 
-  D --> API
-  E --> API
-  L --> API
-  API --> G & T & Q & A & R
-  G --> T --> Q --> A --> R
-```
-
-```text
-app/web/           face
-app/api.py         nerve
-src/gatepulse/     brain
-scripts/           ignition keys
-docs/assets/       pictures for this page
-docs/              decisions · CV · transfer notes
-tests/             smoke alarms
-```
-
----
-
-## AI without the fog machine
-
-```text
-features ──► RandomForest ──► score 0–100 ──► High / Medium / Low
-                    │
-                    ├── feature importance chart
-                    └── what-if scorer (Model room)
-```
-
-Runs offline. No API key. Small-N metrics stay honest on screen.
-
----
-
-## Why this story exists
-
-Skills practiced: planning data · checklist QA · automation · dashboards · AI prioritization · multi-plant ops.
-
-Story chosen: **NPI / SOP launch readiness** — not a photocopy of any single certification job ad.
-
-Careful interview wording → [`docs/SKILL_TRANSFER.md`](docs/SKILL_TRANSFER.md)  
-Build memory → [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md)  
-CV lines → [`docs/CV_BULLETS.md`](docs/CV_BULLETS.md)
+Interview notes → [`docs/SKILL_TRANSFER.md`](docs/SKILL_TRANSFER.md)  
+CV lines → [`docs/CV_BULLETS.md`](docs/CV_BULLETS.md)  
+Decision log → [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md)
 
 ---
 
 <p align="center">
-  <img src="docs/assets/gatepulse-banner.png" alt="" width="60%" />
-</p>
-
-<p align="center">
-  <sub>MIT · Helion Industrial is fictional · synthetic data only</sub><br/>
-  <b>See the launch.</b> <i>Trust the pipeline.</i>
+  <sub>MIT · Northbridge Academies is fictional · synthetic data only</sub><br/>
+  <b>See the campus.</b> <i>Trust the pipeline.</i>
 </p>

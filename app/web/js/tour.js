@@ -65,7 +65,7 @@
         popover: {
           title: "Welcome to GatePulse",
           description:
-            "This app tracks new-product launch readiness across factories. " +
+            "This app tracks exam, term-start, and inspection readiness across four school campuses. " +
             "The dark strip is just the brand rail — the real work happens in the pages on the right.",
           side: "right",
           align: "start",
@@ -79,7 +79,7 @@
           description:
             "Use these tabs to move around. " +
             "<strong>Deck</strong> = manager view. Labels with <em>BE</em> open backend tools " +
-            "(Engine, Data, Model). Launches and Exports are day-to-day pages.",
+            "(Engine, Data, Model). Campuses and Exports are day-to-day pages.",
           side: "bottom",
           align: "start",
         },
@@ -102,7 +102,7 @@
           title: "Command Deck",
           description:
             "This is the frontend “steering” screen. It explains what you are looking at " +
-            "and summarizes launch health for meetings — no coding required here.",
+            "and summarizes campus programme health for SLT meetings — no coding required here.",
           side: "bottom",
           align: "start",
         },
@@ -113,7 +113,7 @@
         popover: {
           title: "Live KPIs",
           description:
-            "These numbers come from the backend pipeline (launches, critical count, AI risk, progress). " +
+            "These numbers come from the backend pipeline (programmes, critical count, AI risk, progress). " +
             "If they look empty, open <strong>Engine</strong> and run the full pipeline first.",
           side: "left",
           align: "start",
@@ -122,9 +122,9 @@
       {
         element: "#tour-health",
         popover: {
-          title: "Plant health chart",
+          title: "Campus health chart",
           description:
-            "Stacked bars by plant (Brno, Leipzig, Monterrey, Penang). " +
+            "Stacked bars by campus (Riverside, Hillcrest, Harbour, Oakwood). " +
             "Colors mean status: green = on track, yellow = watch, orange = at risk, red = critical.",
           side: "bottom",
           align: "start",
@@ -136,7 +136,7 @@
           title: "AI read-out",
           description:
             "Short plain-language tips generated from the risk model — " +
-            "which launch is riskiest, which plant needs attention, data-quality warnings.",
+            "which programme is riskiest, which campus needs attention, data-quality warnings.",
           side: "left",
           align: "start",
         },

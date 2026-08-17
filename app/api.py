@@ -55,10 +55,10 @@ class WhatIfBody(BaseModel):
     avg_slip_days: float = 5.0
     quality_score: float = 85.0
     effort_hours: float = 40.0
-    plant_code: str = "LEJ"
+    campus_code: str = "RIV"
     priority: str = "P2"
-    power_class: str = "AC"
-    family: str = "Conveyor"
+    power_class: str = "Secondary"
+    family: str = "Exams"
 
 
 class StageBody(BaseModel):
@@ -75,7 +75,7 @@ def _read_csv(name: str) -> list[dict[str, Any]]:
 
 @app.get("/api/health")
 def health() -> dict:
-    return {"ok": True, "product": "GatePulse", "ui": "custom-web"}
+    return {"ok": True, "product": "GatePulse", "ui": "custom-web", "domain": "schools"}
 
 
 @app.get("/api/meta")
@@ -90,8 +90,8 @@ def meta() -> dict:
 def overview() -> dict:
     facts = pd.read_csv(DATA_PROCESSED / "launch_facts_scored.csv")
     risks = pd.read_csv(DATA_PROCESSED / "launch_risk_scores.csv")
-    by_plant = (
-        facts.groupby(["plant_code", "health"]).size().reset_index(name="count")
+    by_campus = (
+        facts.groupby(["campus_code", "health"]).size().reset_index(name="count")
     )
     return {
         "kpis": {
@@ -101,12 +101,12 @@ def overview() -> dict:
             "avg_progress": round(float(facts["avg_progress"].mean()), 1),
             "avg_risk": round(float(facts["slip_risk_score"].mean()), 1),
         },
-        "health_by_plant": json.loads(by_plant.to_json(orient="records")),
+        "health_by_campus": json.loads(by_campus.to_json(orient="records")),
         "scatter": json.loads(
             facts[
                 [
                     "launch_name",
-                    "plant_code",
+                    "campus_code",
                     "avg_progress",
                     "slip_risk_score",
                     "avg_complexity",

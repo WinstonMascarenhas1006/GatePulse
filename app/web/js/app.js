@@ -89,7 +89,7 @@ const chartDefaults = {
 async function loadDeck() {
   const data = await api("/api/overview");
   setKpis($("#kpi-strip"), [
-    ["Launches", data.kpis.launches],
+    ["Programmes", data.kpis.launches],
     ["Critical", data.kpis.critical],
     ["High risk", data.kpis.high_risk],
     ["Avg progress", `${data.kpis.avg_progress}%`],
@@ -97,8 +97,8 @@ async function loadDeck() {
   ]);
   $("#insight-list").innerHTML = data.insights.map((t) => `<li>${t}</li>`).join("");
 
-  const plants = [...new Set(data.health_by_plant.map((r) => r.plant_code))];
-  const healths = [...new Set(data.health_by_plant.map((r) => r.health))];
+  const campuses = [...new Set(data.health_by_campus.map((r) => r.campus_code))];
+  const healths = [...new Set(data.health_by_campus.map((r) => r.health))];
   const palette = {
     "On track": "#1f7a54",
     Watch: "#c48a2a",
@@ -109,12 +109,12 @@ async function loadDeck() {
   state.charts.health = new Chart($("#chart-health"), {
     type: "bar",
     data: {
-      labels: plants,
+      labels: campuses,
       datasets: healths.map((h) => ({
         label: h,
         backgroundColor: palette[h] || "#888",
-        data: plants.map((p) => {
-          const hit = data.health_by_plant.find((r) => r.plant_code === p && r.health === h);
+        data: campuses.map((p) => {
+          const hit = data.health_by_campus.find((r) => r.campus_code === p && r.health === h);
           return hit ? hit.count : 0;
         }),
       })),
@@ -132,7 +132,7 @@ async function loadDeck() {
     data: {
       datasets: [
         {
-          label: "Launches",
+          label: "Programmes",
           data: data.scatter.map((r) => ({
             x: r.avg_progress,
             y: r.slip_risk_score,
@@ -263,10 +263,10 @@ async function loadDataLab() {
 
 function buildWhatIfForm() {
   const fields = [
-    ["plant_code", "select", ["LEJ", "BRQ", "MTY", "PEN"]],
+    ["campus_code", "select", ["RIV", "HIL", "HAR", "OAK"]],
     ["priority", "select", ["P1", "P2", "P3"]],
-    ["family", "select", ["Conveyor", "Sortation", "AGV", "Packaging", "Lift"]],
-    ["power_class", "select", ["AC", "DC"]],
+    ["family", "select", ["Curriculum", "Exams", "Pastoral", "Inspection"]],
+    ["power_class", "select", ["Primary", "Secondary"]],
     ["avg_complexity", "range", { min: 1, max: 5, step: 0.1, value: 3.5 }],
     ["open_tasks", "range", { min: 0, max: 40, step: 1, value: 12 }],
     ["blocked_milestones", "range", { min: 0, max: 6, step: 1, value: 1 }],
@@ -329,7 +329,7 @@ async function loadModelLab() {
   const risks = await api("/api/model/risks");
   renderTable($("#risk-table"), risks, [
     "launch_name",
-    "plant_code",
+    "campus_code",
     "slip_risk_score",
     "slip_risk_label",
     "priority",
@@ -348,7 +348,7 @@ $("#btn-whatif").onclick = async () => {
     effort_hours: 40,
   };
   fd.forEach((v, k) => {
-    body[k] = Number.isNaN(Number(v)) || ["plant_code", "priority", "family", "power_class"].includes(k)
+    body[k] = Number.isNaN(Number(v)) || ["campus_code", "priority", "family", "power_class"].includes(k)
       ? v
       : Number(v);
   });
@@ -362,20 +362,20 @@ $("#btn-whatif").onclick = async () => {
 
 async function loadLaunches() {
   state.launches = await api("/api/launches");
-  const plants = [...new Set(state.launches.map((l) => l.plant_code))];
-  const pf = $("#plant-filter");
+  const campuses = [...new Set(state.launches.map((l) => l.campus_code))];
+  const pf = $("#campus-filter");
   pf.innerHTML =
-    `<option value="All">All plants</option>` +
-    plants.map((p) => `<option value="${p}">${p}</option>`).join("");
+    `<option value="All">All campuses</option>` +
+    campuses.map((p) => `<option value="${p}">${p}</option>`).join("");
 
   const redraw = () => {
-    const plant = pf.value;
+    const campus = pf.value;
     const rows =
-      plant === "All" ? state.launches : state.launches.filter((l) => l.plant_code === plant);
+      campus === "All" ? state.launches : state.launches.filter((l) => l.campus_code === campus);
     renderTable($("#launches-table"), rows, [
       "launch_id",
       "launch_name",
-      "plant_code",
+      "campus_code",
       "priority",
       "avg_progress",
       "health",

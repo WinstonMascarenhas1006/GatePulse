@@ -1,26 +1,26 @@
 # Skill transfer note (honest)
 
-GatePulse was **not** built as a copy of any single job ad.
+GatePulse is a **school-operations** demonstrator (Northbridge Academies — fictional). It was **not** built as a copy of any single job ad.
 
 ## Skills practiced (transferable)
-- Multi-entity project / gate tracking and progress transparency
-- Scheduling slip awareness and task-level drill-down
+- Multi-site programme / gate tracking and progress transparency
+- Deadline slip awareness and task-level drill-down
 - Data cleaning + quality scoring on operational tables
-- Interactive management dashboards (Streamlit/Plotly; same storytelling as Power BI)
-- Process automation via a reproducible Python pipeline (Power Query / VBA mindset)
+- Interactive management dashboards (same storytelling as Power BI)
+- Process automation via a reproducible Python pipeline
 - Offline ML risk scoring + written insights for steering
 - Excel + Markdown decision packs
-- International plant network (EU / Americas / APAC)
+- Four-campus network (city / suburban / coastal / rural)
 
 ## What GatePulse is not
+- Not a student-grades Kaggle clone
 - Not a vehicle certification / homologation system
-- Not Korea / Japan / Australia type-approval tooling
-- Not a claim of employment or confidential OEM experience
+- Not a claim of employment at a real school or OEM
 
-## If an interviewer asks “why not certification?”
-> I wanted a portfolio project that exercises planning analytics, data quality, dashboards, and AI prioritization on operational gate data — without cloning a specific job description. Launch readiness is a natural cousin: evidence packages, deadlines, cross-functional owners, and launch risk. I’m interested in applying the same methods in certification environments.
+## If an interviewer asks “why schools, not factories / certification?”
+> I wanted operational gate data that anyone can explain: exams, term start, inspection packs. The methods — ETL, quality rules, dashboards, AI prioritization — transfer to any planning desk, including certification.
 
-## Sources for this positioning
-- User instruction to avoid exact JD clone (S-USER-02)
-- Public Stage-Gate / SOP readiness concepts (S-MFG-01, S-MFG-02)
-- Skill themes abstracted from a public trainee posting, used only as a checklist of capabilities — not as a process template (S-JD-01)
+## Sources
+- S-USER-09: user asked to change concept from industrial plants to school data
+- S-USER-02: avoid cloning a specific job description
+- S-JD-01: skill themes only (analysis, QA, dashboards, automation, AI)

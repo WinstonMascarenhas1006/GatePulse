@@ -21,7 +21,7 @@ from gatepulse.report import export_all  # noqa: E402
 def main() -> None:
     started = datetime.now()
     print("=== GatePulse pipeline ===")
-    print("[1/5] Generating synthetic NPI launch data...")
+    print("[1/5] Generating synthetic campus programme data...")
     tables = generate_all(seed=42)
     print("      ", {k: len(v) for k, v in tables.items()})
 

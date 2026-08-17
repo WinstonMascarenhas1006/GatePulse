@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from gatepulse.ai_risk import FEATURE_COLS_NUM, generate_insights, score_what_if  # noqa: E402
-from gatepulse.config import DATA_EXPORTS, DATA_PROCESSED, DATA_RAW, MODELS_DIR, PLANTS  # noqa: E402
+from gatepulse.config import DATA_EXPORTS, DATA_PROCESSED, DATA_RAW, MODELS_DIR, CAMPUSES  # noqa: E402
 from gatepulse.engine import (  # noqa: E402
     PIPELINE_STAGES,
     artifact_inventory,
@@ -310,7 +310,7 @@ def _cached_tables() -> dict[str, pd.DataFrame]:
         "tasks",
         "quality_issues",
         "launch_risk_scores",
-        "plants",
+        "campuses",
         "workstreams",
     ]
     if any(not (DATA_PROCESSED / f"{r}.csv").exists() for r in required):
@@ -393,15 +393,15 @@ def style_fig(fig: go.Figure) -> go.Figure:
 def page_overview(data: dict[str, pd.DataFrame]) -> None:
     facts = data["launch_facts_scored"]
     risks = data["launch_risk_scores"]
-    masthead("Command deck", "Manager-facing portfolio pulse across plants.", "fe")
+    masthead("Command deck", "Manager-facing portfolio pulse across campuses.", "fe")
     kpi_band(facts)
 
-    section("01 · Health", "Plant posture", "Backend facts rendered as a frontend composition.")
+    section("01 · Health", "Campus posture", "Backend facts rendered as a frontend composition.")
     left, right = st.columns((1.45, 1), gap="large")
     with left:
         fig = px.bar(
-            facts.groupby(["plant_code", "health"]).size().reset_index(name="count"),
-            x="plant_code",
+            facts.groupby(["campus_code", "health"]).size().reset_index(name="count"),
+            x="campus_code",
             y="count",
             color="health",
             color_discrete_map={
@@ -424,7 +424,7 @@ def page_overview(data: dict[str, pd.DataFrame]) -> None:
         facts,
         x="avg_progress",
         y="slip_risk_score",
-        color="plant_code",
+        color="campus_code",
         size="avg_complexity",
         hover_name="launch_name",
         color_discrete_sequence=["#e2b86a", "#5eb0c8", "#3d8b6e", "#c97b63"],
@@ -604,7 +604,7 @@ def page_model_lab(data: dict[str, pd.DataFrame]) -> None:
     with left:
         st.markdown('<div class="gp-panel"><h3>What-if controls</h3>', unsafe_allow_html=True)
         avg = facts[FEATURE_COLS_NUM].mean(numeric_only=True)
-        plant = st.selectbox("Plant", sorted(PLANTS.keys()))
+        plant = st.selectbox("Campus", sorted(CAMPUSES.keys()))
         priority = st.selectbox("Priority", ["P1", "P2", "P3"])
         family = st.selectbox(
             "Family",
@@ -625,7 +625,7 @@ def page_model_lab(data: dict[str, pd.DataFrame]) -> None:
         row["avg_slip_days"] = st.slider("Avg slip days", 0.0, 30.0, float(avg.get("avg_slip_days", 5)), 0.5)
         row["quality_score"] = st.slider("Quality score", 40, 100, int(avg.get("quality_score", 85)))
         row.update(
-            {"plant_code": plant, "priority": priority, "family": family, "power_class": power_class}
+            {"campus_code": plant, "priority": priority, "family": family, "power_class": power_class}
         )
         if st.button("Score with model", type="primary", use_container_width=True):
             try:
@@ -670,21 +670,21 @@ def page_launches(data: dict[str, pd.DataFrame]) -> None:
     masthead("Launches", "Drill from portfolio table into gate timeline.", "fe")
 
     section("01 · Filter", "Working set", "Filters live in the sidebar — table stays full-bleed.")
-    plants = ["All"] + sorted(facts["plant_code"].unique().tolist())
-    plant = st.sidebar.selectbox("Plant", plants)
+    campuses = ["All"] + sorted(facts["campus_code"].unique().tolist())
+    plant = st.sidebar.selectbox("Campus", campuses)
     health = st.sidebar.multiselect(
         "Health", sorted(facts["health"].unique()), default=sorted(facts["health"].unique())
     )
     view = facts[facts["health"].isin(health)]
     if plant != "All":
-        view = view[view["plant_code"] == plant]
+        view = view[view["campus_code"] == plant]
 
     st.dataframe(
         view[
             [
                 "launch_id",
                 "launch_name",
-                "plant_code",
+                "campus_code",
                 "priority",
                 "sop_target",
                 "avg_progress",

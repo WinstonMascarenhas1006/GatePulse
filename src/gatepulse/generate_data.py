@@ -1,7 +1,7 @@
 """
-Synthetic NPI launch-readiness dataset.
-Sources: S-MFG-01/02 (gate concepts), S-DQ-01 (dirty rows), S-PRIOR-01 (generator pattern).
-Decisions: D-003..D-006, D-014-style dirty data carried as D-012.
+Synthetic school-operations dataset (Northbridge Academies).
+Sources: S-USER-09 (school domain), S-DQ-01 (dirty rows), S-PRIOR-01 (generator pattern).
+Decision D-031.
 """
 
 from __future__ import annotations
@@ -14,9 +14,9 @@ import numpy as np
 import pandas as pd
 
 from gatepulse.config import (
+    CAMPUSES,
     DATA_RAW,
     MILESTONE_TYPES,
-    PLANTS,
     PROGRAMS,
     STATUSES,
     WORKSTREAMS,
@@ -32,26 +32,26 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
     rng = _rng(seed)
     DATA_RAW.mkdir(parents=True, exist_ok=True)
 
-    plants = pd.DataFrame([{"plant_code": k, **v} for k, v in PLANTS.items()])
+    campuses = pd.DataFrame([{"campus_code": k, **v} for k, v in CAMPUSES.items()])
     programs = pd.DataFrame(PROGRAMS)
     workstreams = pd.DataFrame(WORKSTREAMS)
 
-    # Each program launches at 2-4 plants
+    # Each programme runs at 2-4 campuses
     launch_rows = []
     lid = 2000
     planners = ["E. Novak", "R. Mendoza", "A. Lim", "T. Berger", "S. Kowalski", "N. Hassan"]
     for p in PROGRAMS:
-        n_plants = int(rng.integers(2, 5))
-        chosen_plants = list(rng.choice(list(PLANTS.keys()), size=n_plants, replace=False))
-        for plant in chosen_plants:
+        n_campuses = int(rng.integers(2, 5))
+        chosen_campuses = list(rng.choice(list(CAMPUSES.keys()), size=n_campuses, replace=False))
+        for campus in chosen_campuses:
             lid += 1
             sop = as_of + timedelta(days=int(rng.integers(60, 400)))
             launch_rows.append(
                 {
                     "launch_id": f"L-{lid}",
                     "program_id": p["program_id"],
-                    "plant_code": plant,
-                    "launch_name": f"{p['name']} @ {PLANTS[plant]['name']}",
+                    "campus_code": campus,
+                    "launch_name": f"{p['name']} @ {CAMPUSES[campus]['name']}",
                     "planner": rng.choice(planners),
                     "priority": rng.choice(["P1", "P2", "P3"], p=[0.30, 0.50, 0.20]),
                     "sop_target": sop.date().isoformat(),
@@ -60,13 +60,13 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
             )
     launches = pd.DataFrame(launch_rows)
 
-    plant_ws_bias = {
-        "LEJ": ["TOOL", "QFREEZE", "MES", "PILOT", "COST", "TRAIN"],
-        "BRQ": ["SUPPLY", "LOG", "PILOT", "HSE", "SPARES", "TRAIN"],
-        "MTY": ["TOOL", "SUPPLY", "LOG", "QFREEZE", "TRAIN", "HSE"],
-        "PEN": ["MES", "SPARES", "LOG", "COST", "PILOT", "SUPPLY"],
+    campus_ws_bias = {
+        "RIV": ["TIME", "STAFF", "ITDEV", "PAPER", "COMMS", "SAFE"],
+        "HIL": ["STAFF", "FAC", "PAPER", "INVIG", "SEND", "COMMS"],
+        "HAR": ["TIME", "INVIG", "FAC", "SAFE", "SEND", "RES"],
+        "OAK": ["ITDEV", "RES", "COMMS", "STAFF", "PAPER", "SAFE"],
     }
-    dc_extra = ["MES", "HSE"]
+    secondary_extra = ["INVIG", "RES"]
 
     launch_ws = []
     milestones = []
@@ -76,9 +76,9 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
 
     for _, launch in launches.iterrows():
         prog = programs.loc[programs["program_id"] == launch["program_id"]].iloc[0]
-        base = list(plant_ws_bias[launch["plant_code"]])
-        if prog["power_class"] == "DC":
-            base = list(dict.fromkeys(base + dc_extra))
+        base = list(campus_ws_bias[launch["campus_code"]])
+        if prog["power_class"] == "Secondary":
+            base = list(dict.fromkeys(base + secondary_extra))
         n_ws = int(rng.integers(4, min(8, len(base) + 1)))
         chosen = list(rng.choice(base, size=n_ws, replace=False))
 
@@ -93,7 +93,7 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
                     "ws_code": code,
                     "mandatory": True,
                     "owner_team": rng.choice(
-                        ["Launch Office", "Manufacturing Eng", "Quality", "Logistics", "IT"]
+                        ["Exams Office", "Curriculum", "Pastoral", "IT / MIS", "Facilities"]
                     ),
                 }
             )
@@ -153,14 +153,14 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
                         "launch_id": launch["launch_id"],
                         "task_name": rng.choice(
                             [
-                                "Update launch checklist",
-                                "Confirm supplier capacity",
-                                "Align plant steering deck",
-                                "Close open quality findings",
-                                "Book pilot-build slot",
-                                "Validate MES master data",
-                                "Translate work instructions",
-                                "Prepare gate review slides",
+                                "Update campus checklist",
+                                "Confirm invigilator cover",
+                                "Align SLT status deck",
+                                "Close open safeguarding actions",
+                                "Book exam hall slots",
+                                "Validate MIS class lists",
+                                "Send parent notice draft",
+                                "Prepare governor briefing slides",
                             ]
                         ),
                         "assignee": rng.choice(planners + ["Extern"]),
@@ -194,7 +194,7 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
             milestones_df.loc[milestones_df.index[i], "status"] = "Unkown"
 
     tables = {
-        "plants": plants,
+        "campuses": campuses,
         "programs": programs,
         "workstreams": workstreams,
         "launches": launches,
@@ -210,7 +210,7 @@ def generate_all(seed: int = 42, as_of: datetime | None = None) -> dict[str, pd.
         "as_of": as_of.date().isoformat(),
         "seed": seed,
         "row_counts": {k: len(v) for k, v in tables.items()},
-        "notes": "Synthetic GatePulse data for Helion Industrial demo. Fictional OEM.",
+        "notes": "Synthetic GatePulse data for Northbridge Academies. Fictional school group.",
     }
     (DATA_RAW / "generation_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     return tables

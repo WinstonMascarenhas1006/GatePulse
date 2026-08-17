@@ -19,6 +19,8 @@ def test_generate_linked(tmp_path, monkeypatch):
 
     monkeypatch.setattr(gd, "DATA_RAW", tmp_path)
     tables = gd.generate_all(seed=1)
+    assert "campuses" in tables
+    assert "campus_code" in tables["launches"].columns
     assert len(tables["launches"]) >= 8
     assert set(tables["milestones"]["launch_id"]).issubset(set(tables["launches"]["launch_id"]))
 
@@ -42,7 +44,7 @@ def test_clean_milestones():
                 "milestone_id": "M-2",
                 "launch_id": "L-1",
                 "sequence": 2,
-                "milestone_type": "SOP",
+                "milestone_type": "Exam papers ready",
                 "planned_date": "2026-10-01",
                 "actual_date": None,
                 "status": "In progress",
